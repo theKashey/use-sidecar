@@ -1,0 +1,1 @@
+export type Importer<T> = () => Promise<{ default: React.ComponentType<T> }>;
