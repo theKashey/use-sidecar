@@ -27,26 +27,16 @@
 
 UI/Effects code splitting pattern - [read more](https://dev.to/thekashey/sidecar-for-a-code-splitting-1o8g).
 
+## SSR and usage tracking
+Sidecar pattern is clear:
+- you dont need to use/render any `sidecars` on server.
+- you dont have to load `sidecars` prior main render.
+
+Thus - no usage tracking, and literally no SSR. It's just skipped.
 
 # API
 Terminology: 
 - `side-car` - not UI component, which may carry effects for a paired UI component.
-
-## useSidecar(importer)
-- Type: hook, loads a `sideCar` using provided `importer` which shall follow React.lazy API
-- Goal: to load a side car without displaying any "spinners".
-- Usage: load side car for a component
-```js
-import {useSidecar} from 'use-sidecar';
-
-const [Car, error] = useSidecar(() => import('./sideCar'));
-return (
-  <>
-    {Car ? <Car {...props} /> : null}
-    <UIComponent {...props}>
-  </>
-) 
-```
 
 ## sidecar(importer)
 - Type: HOC, `React.lazy` analog. Does not require `Suspense`, might provide error failback.
@@ -62,13 +52,34 @@ const Sidecar =  sidecar(() => import('./sidecar'), <span>on fail</span>);
 </> 
 ```
 
-## renderCar(importer)
+## useSidecar(importer)
+- Type: hook, loads a `sideCar` using provided `importer` which shall follow React.lazy API
+- Goal: to load a side car without displaying any "spinners".
+- Usage: load side car for a component
+```js
+import {useSidecar} from 'use-sidecar';
+
+const [Car, error] = useSidecar(() => import('./sideCar'));
+return (
+  <>
+    {Car ? <Car {...props} /> : null}
+    <UIComponent {...props}>
+  </>
+); 
+```
+
+## renderCar(Component)
 - Type: HOC, moves renderProp component to a side channel
 - Goal: Provide render prop support, ie defer component loading keeping tree untouched.
-- Usage: Provide `defaults` and use them until sidecar is loaded.
+- Usage: Provide `defaults` and use them until sidecar is loaded letting you code split (non visual) render-prop component
 ```js
-import {renderCar} from "use-sidecar";
-const RenderCar = renderCar(() => import('react-powerplug'), [{value: 0}]);
+import {renderCar, sidecar} from "use-sidecar";
+const RenderCar = renderCar(
+  // will move side car to a side channel
+  sidecar(() => import('react-powerplug').then(imports => imports.Value)),
+  // default render props
+  [{value: 0}]  
+);
 
 <RenderCar>
   {({value}) => <span>{value}</span>}

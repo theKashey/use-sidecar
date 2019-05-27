@@ -9,7 +9,7 @@ interface Options {
   pure?: boolean;
 }
 
-export function clientRenderCar<T extends any[], K>(WrappedComponent: RenderPropComponent<T, K>, defaults: T, options: Options = {}) {
+export function renderCar<T extends any[], K>(WrappedComponent: RenderPropComponent<T, K>, defaults: T, options: Options = {}) {
   return function SideRender(props: CombinedProps<T, K>) {
     const [state, setState] = useState(null as any);
 
@@ -34,14 +34,4 @@ export function clientRenderCar<T extends any[], K>(WrappedComponent: RenderProp
       </React.Fragment>
     );
   }
-}
-
-export function serverRenderCar<T extends any[], K>(WrappedComponent: RenderPropComponent<T, K>) {
-  return function SideRender(props: CombinedProps<T, K>) {
-    return <WrappedComponent {...props}/>
-  }
-}
-
-export function renderCar<T extends any[], K>(WrappedComponent: RenderPropComponent<T, K>, defaults: T, options: Options = {}) {
-  return isNode ? serverRenderCar(WrappedComponent) : clientRenderCar(WrappedComponent, defaults, options);
 }
