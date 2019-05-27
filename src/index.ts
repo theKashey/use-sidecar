@@ -1,9 +1,5 @@
-import {sidecar} from './hoc'
-import {useSidecar} from './hook';
-import {setConfig} from "./config";
-
-export {
-  sidecar,
-  useSidecar,
-  setConfig
-}
+export {sidecar} from './hoc'
+export {useSidecar} from './hook';
+export {setConfig} from "./config";
+export {createMedium} from "./medium";
+export {renderCar} from './renderProp';

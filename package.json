@@ -4,6 +4,7 @@
   "description": "Sidecar code splitting utils",
   "main": "dist/es5/index.js",
   "devDependencies": {
+    "@types/detect-node": "^2.0.0",
     "ts-react-toolbox": "^0.2.2"
   },
   "engines": {
@@ -19,7 +20,8 @@
     "lint": "ts-react-toolbox lint",
     "static": "ts-react-toolbox publish",
     "format": "ts-react-toolbox format",
-    "analyze": "ts-react-toolbox analyze"
+    "analyze": "ts-react-toolbox analyze",
+    "prepublish": "npm run build"
   },
   "peerDependencies": {
     "react": "^16.8.0"
@@ -30,8 +32,26 @@
   "files": [
     "dist"
   ],
-  "keywords": ["code spliting","react","sidecar"],
+  "keywords": [
+    "code spliting",
+    "react",
+    "sidecar"
+  ],
   "homepage": "https://github.com/theKashey/use-sidecar",
   "author": "theKashey <thekashey@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "detect-node": "^2.0.4",
+    "tslib": "^1.9.3"
+  },
+  "size-limit": [
+    {
+      "path": "dist/es2015/index.js",
+      "size": "1kb",
+      "limit": "100 ms"
+    }
+  ],
+  "resolutions": {
+    "typescript": "^3.0.0"
+  }
 }

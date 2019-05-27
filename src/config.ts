@@ -2,7 +2,7 @@ export interface IConfig {
   onError(e: Error): void;
 }
 
-export const config = {
+export const config: IConfig = {
   onError: e => console.error(e),
 };
 
