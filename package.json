@@ -26,6 +26,7 @@
   "peerDependencies": {
     "react": "^16.8.0"
   },
+  "sideEffects": false,
   "jsnext:main": "dist/es2015/index.js",
   "module": "dist/es2015/index.js",
   "types": "dist/es5/index.d.ts",

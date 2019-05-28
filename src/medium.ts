@@ -16,7 +16,11 @@ interface SideMedium<T> {
 
 const sharedState = new WeakMap();
 
-export function createMedium<T>(symbol: any, defaults: T, middleware: MiddlewareCallback<T>): SideMedium<T> {
+function ItoI<T>(a: T) {
+  return a;
+}
+
+export function createMedium<T>(symbol: any, defaults: T, middleware: MiddlewareCallback<T> = ItoI): SideMedium<T> {
   if (sharedState.has(symbol)) {
     return sharedState.get(sharedState);
   }

@@ -34,9 +34,26 @@ Sidecar pattern is clear:
 
 Thus - no usage tracking, and literally no SSR. It's just skipped.
 
+## Terminology: 
+- `sidecar`(robin) - not UI component, which may carry effects for a paired UI component.
+- `UI`(batman) - UI component, which interactivity is moved to a `sidecar`.
+
+## Concept
+- a `package` exposes __3 entry points__ using a [nested `package.json` format](https://github.com/theKashey/multiple-entry-points-example):
+ - default aka `combination`, and lets hope tree shaking will save you
+ - `UI`, with only UI part
+ - `sidecar`, with all the logic
+ - `UI` + `sidecar` === `combination`. If they are bigger, then something is too coupled.
+ 
+- if package dependent on another _sidecar_ package:
+ - it shall export dependency side car among own sidecar.
+ 
+- package uses `medium` to talk with own sidecar, breaking explicit dependency.
+  
+- final consumer uses `sidecar` or `useSidecar` to combine pieces together.
+ - that's why packags itself is not using it - it's not the "final" consumer.
+
 # API
-Terminology: 
-- `side-car` - not UI component, which may carry effects for a paired UI component.
 
 ## sidecar(importer)
 - Type: HOC, `React.lazy` analog. Does not require `Suspense`, might provide error failback.
