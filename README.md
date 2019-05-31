@@ -59,6 +59,7 @@ Thus - no usage tracking, and literally no SSR. It's just skipped.
 - Type: HOC, `React.lazy` analog. Does not require `Suspense`, might provide error failback.
 - Goal: React.lazy analog for code splitting
 - Usage: like React.lazy to load a side-car component.
+- Analog: React.Lazy
 ```js
 import {sidecar} from "use-sidecar";
 const Sidecar =  sidecar(() => import('./sidecar'), <span>on fail</span>);
@@ -73,6 +74,7 @@ const Sidecar =  sidecar(() => import('./sidecar'), <span>on fail</span>);
 - Type: hook, loads a `sideCar` using provided `importer` which shall follow React.lazy API
 - Goal: to load a side car without displaying any "spinners".
 - Usage: load side car for a component
+- Analog: none
 ```js
 import {useSidecar} from 'use-sidecar';
 
@@ -89,6 +91,7 @@ return (
 - Type: HOC, moves renderProp component to a side channel
 - Goal: Provide render prop support, ie defer component loading keeping tree untouched.
 - Usage: Provide `defaults` and use them until sidecar is loaded letting you code split (non visual) render-prop component
+- Analog: - Analog: code split library like [react-imported-library](https://github.com/theKashey/react-imported-library) or [@loadable/lib](https://www.smooth-code.com/open-source/loadable-components/docs/library-splitting/).
 ```js
 import {renderCar, sidecar} from "use-sidecar";
 const RenderCar = renderCar(
@@ -107,6 +110,7 @@ const RenderCar = renderCar(
 - Type: Util. Creates shared effect medium for algebraic effect.
 - Goal: To decouple modules from each other.
 - Usage: `use` in UI side, and `assign` from side-car. All effects would be executed.
+- Analog: React.__SECRET_DOM_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
 ```js
 const medium = createMedium(SECRET);
 const cancelCb = medium.useMedium(someData);

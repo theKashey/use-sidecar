@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {useState, useMemo, useCallback, useLayoutEffect} from "react";
-import * as isNode from 'detect-node';
 
 type CombinedProps<T extends any[], K> = { children: (...prop: T) => any } & K;
 type RenderPropComponent<T extends any[], K> = React.ComponentType<CombinedProps<T, K>>;
@@ -9,7 +8,7 @@ interface Options {
   pure?: boolean;
 }
 
-export function renderCar<T extends any[], K>(WrappedComponent: RenderPropComponent<T, K>, defaults: T, options: Options = {}) {
+export function renderCar<T extends any[], K>(WrappedComponent: RenderPropComponent<T, K>, defaults: (props: K) => T, options: Options = {}) {
   return function SideRender(props: CombinedProps<T, K>) {
     const [state, setState] = useState(null as any);
 
@@ -25,7 +24,7 @@ export function renderCar<T extends any[], K>(WrappedComponent: RenderPropCompon
       }
     }, [propagateState]);
 
-    const children = useMemo(() => props.children(...(state || defaults)), [state]);
+    const children = useMemo(() => props.children(...(state || defaults(props))), [state]);
 
     return (
       <React.Fragment>
