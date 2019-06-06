@@ -43,7 +43,9 @@ Thus - no usage tracking, and literally no SSR. It's just skipped.
   - default aka `combination`, and lets hope tree shaking will save you
   - `UI`, with only UI part
   - `sidecar`, with all the logic
-  - > `UI` + `sidecar` === `combination`. The size of `UI+sidecar` might a bit bigger than size of their `combination`. 
+  - > `UI` + `sidecar` === `combination`. The size of `UI+sidecar` might a bit bigger than size of their `combination`.
+  Use [size-limit](https://github.com/ai/size-limit) to control their size independently. 
+  
 
 - package uses a `medium` to talk with own sidecar, breaking explicit dependency.
  
@@ -78,7 +80,7 @@ const cancelCb = medium.useMedium(someData);
 // like
 useEffect(() => medium.useMedium(someData), []);
 
-medium.assignMedium(dataProcessor)
+medium.assignMedium(someDataProcessor)
 ```
 
 
@@ -91,6 +93,7 @@ medium.assignMedium(dataProcessor)
 ```js
 import {effectCar} from './medium';
 import {EffectComponent} from './Effect';
+// hint - `effectCar` medium __have__ to be defined in another file
 export default exportSidecar(effectCar, EffectComponent);
 ```
 
