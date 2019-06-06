@@ -40,24 +40,63 @@ Thus - no usage tracking, and literally no SSR. It's just skipped.
 
 ## Concept
 - a `package` exposes __3 entry points__ using a [nested `package.json` format](https://github.com/theKashey/multiple-entry-points-example):
- - default aka `combination`, and lets hope tree shaking will save you
- - `UI`, with only UI part
- - `sidecar`, with all the logic
- - `UI` + `sidecar` === `combination`. If they are bigger, then something is too coupled.
+  - default aka `combination`, and lets hope tree shaking will save you
+  - `UI`, with only UI part
+  - `sidecar`, with all the logic
+  - > `UI` + `sidecar` === `combination`. The size of `UI+sidecar` might a bit bigger than size of their `combination`. 
+
+- package uses a `medium` to talk with own sidecar, breaking explicit dependency.
  
-- if package dependent on another _sidecar_ package:
- - it shall export dependency side car among own sidecar.
- 
-- package uses `medium` to talk with own sidecar, breaking explicit dependency.
-  
-- final consumer uses `sidecar` or `useSidecar` to combine pieces together.
- - that's why packags itself is not using it - it's not the "final" consumer.
+- if package depends on another _sidecar_ package:
+  - it shall export dependency side car among own sidecar.
+  - package imports own sidecar via `medium`, thus able to export multiple sidecars via one export. 
+
+- final consumer uses `sidecar` or `useSidecar` to combine pieces together.  
+
+## Rules
+- `UI` components might use/import any other `UI` components
+- `sidecar` could use/import any other `sidecar`
+
+That would form two different code branches, you may load separately - UI first, and effect sidecar later.
+That also leads to a obvious consequence - __one sidecar may export all sidecars__.
+- to decouple `sidecars` from module exports, and be able to pick "the right" one at any point
+you have to use `exportSidecar(medium, component)` to export it, and use the same `medium` to import it back.
+- this limitation is for __libraries only__, as long as in the usercode you might 
+dynamically import whatever and whenever you want. 
 
 # API
 
+## createMedium(symbol)
+- Type: Util. Creates shared effect medium for algebraic effect.
+- Goal: To decouple modules from each other.
+- Usage: `use` in UI side, and `assign` from side-car. All effects would be executed.
+- Analog: WeakMap, React.__SECRET_DOM_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
+```js
+const medium = createMedium(SECRET);
+const cancelCb = medium.useMedium(someData);
+
+// like
+useEffect(() => medium.useMedium(someData), []);
+
+medium.assignMedium(dataProcessor)
+```
+
+
+## exportSidecar(medium, component)
+- Type: HOC
+- Goal: store `component` inside `medium` and return external wrapper
+- Solving: decoupling module exports to support exporting multiple sidecars via a single entry point.
+- Usage: use to export a `sidecar`
+- Analog: WeakMap
+```js
+import {effectCar} from './medium';
+import {EffectComponent} from './Effect';
+export default exportSidecar(effectCar, EffectComponent);
+```
+
 ## sidecar(importer)
-- Type: HOC, `React.lazy` analog. Does not require `Suspense`, might provide error failback.
-- Goal: React.lazy analog for code splitting
+- Type: HOC
+- Goal: React.lazy analog for code splitting, but does not require `Suspense`, might provide error failback.
 - Usage: like React.lazy to load a side-car component.
 - Analog: React.Lazy
 ```js
@@ -69,6 +108,8 @@ const Sidecar =  sidecar(() => import('./sidecar'), <span>on fail</span>);
  <UI />
 </> 
 ```
+### Importing `exportedSidecar`
+Would require additional prop to be set - ```<Sidecar sideCar={effectCar} />```
 
 ## useSidecar(importer)
 - Type: hook, loads a `sideCar` using provided `importer` which shall follow React.lazy API
@@ -79,6 +120,22 @@ const Sidecar =  sidecar(() => import('./sidecar'), <span>on fail</span>);
 import {useSidecar} from 'use-sidecar';
 
 const [Car, error] = useSidecar(() => import('./sideCar'));
+return (
+  <>
+    {Car ? <Car {...props} /> : null}
+    <UIComponent {...props}>
+  </>
+); 
+```
+### Importing `exportedSideCar`
+You have to specify __effect medium__ to read data from, as long as __export itself is empty__.
+```js
+import {useSidecar} from 'use-sidecar';
+
+/* medium.js: */ export const effectCar = useMedium({});
+/* sideCar.js: */export default exportSidecar(effectCar, EffectComponent);
+
+const [Car, error] = useSidecar(() => import('./sideCar'), effectCar); 
 return (
   <>
     {Car ? <Car {...props} /> : null}
@@ -104,21 +161,6 @@ const RenderCar = renderCar(
 <RenderCar>
   {({value}) => <span>{value}</span>}
 </RenderCar>
-```
-
-## createMedium(symbol)
-- Type: Util. Creates shared effect medium for algebraic effect.
-- Goal: To decouple modules from each other.
-- Usage: `use` in UI side, and `assign` from side-car. All effects would be executed.
-- Analog: React.__SECRET_DOM_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
-```js
-const medium = createMedium(SECRET);
-const cancelCb = medium.useMedium(someData);
-
-// like
-useEffect(() => medium.useMedium(someData), []);
-
-medium.assignMedium(dataProcessor)
 ```
 
 ## setConfig(config)

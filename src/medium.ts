@@ -1,18 +1,4 @@
-type removeCb = () => void;
-type MediumCallback<T> = (data: T) => any;
-type MiddlewareCallback<T> = (data: T, assigned: boolean) => T;
-type SidePush<T> = {
-  length?: number;
-
-  push(data: T): void;
-  filter(cb: (x: T) => boolean): SidePush<T>;
-}
-
-interface SideMedium<T> {
-  useMedium(data: T): removeCb;
-
-  assignMedium(cb: MediumCallback<T>): void;
-}
+import {MediumCallback, MiddlewareCallback, SideMedium, SidePush} from "./types";
 
 const sharedState = new WeakMap();
 
@@ -28,12 +14,19 @@ export function createMedium<T>(symbol: any, defaults: T, middleware: Middleware
   let buffer: SidePush<T> = [];
   let assigned = false;
   const medium: SideMedium<T> = {
+    read() {
+      if (assigned) {
+        throw new Error('Sidecar: could not `read` assigned medium');
+      }
+      return (buffer as Array<T>)[buffer.length - 1];
+    },
     useMedium(data: T) {
       const item = middleware(data, assigned);
       buffer.push(item);
       return () => buffer = buffer.filter(x => x !== item);
     },
     assignMedium(cb: MediumCallback<T>) {
+      assigned = true;
       while (buffer.length) {
         const cbs = buffer as Array<T>;
         buffer = [];
@@ -44,8 +37,7 @@ export function createMedium<T>(symbol: any, defaults: T, middleware: Middleware
         push: x => cb(x),
         filter: () => buffer,
       }
-      ;
-    }
+    },
   };
   sharedState.set(symbol, medium);
 

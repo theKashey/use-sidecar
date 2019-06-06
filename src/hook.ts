@@ -1,10 +1,10 @@
 import {useReducer, useEffect} from 'react';
 import * as isNode from 'detect-node';
-import {Importer} from "./types";
+import {Importer, SideMedium} from "./types";
 
 const cache = new WeakMap();
 
-export function useSidecar<T>(importer: Importer<T>): [React.ComponentType<T> | null, Error | null] {
+export function useSidecar<T>(importer: Importer<T>, effect?: SideMedium<any>): [React.ComponentType<T> | null, Error | null] {
   const [Car, setCar] = useReducer((_, s) => s, isNode ? undefined : cache.get(importer));
   const [error, setError] = useReducer((_, s) => s, null);
 
@@ -13,7 +13,15 @@ export function useSidecar<T>(importer: Importer<T>): [React.ComponentType<T> | 
       importer()
         .then(
           car => {
-            const resolved: T = (car as any).default || car;
+            const resolved: T = effect ? effect.read() : ((car as any).default || car);
+            if (!resolved) {
+              console.log('with importer', importer);
+              if (effect) {
+                throw new Error('Sidecar medium not found');
+              } else {
+                throw new Error('Sidecar not found in exports');
+              }
+            }
             cache.set(importer, resolved);
             setCar(resolved);
           },

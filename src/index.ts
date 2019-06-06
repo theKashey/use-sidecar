@@ -3,3 +3,6 @@ export {useSidecar} from './hook';
 export {setConfig} from "./config";
 export {createMedium} from "./medium";
 export {renderCar} from './renderProp';
+export {exportSidecar} from './exports';
+
+export {SideCarComponent} from './types';
