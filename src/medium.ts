@@ -1,16 +1,10 @@
-import {MediumCallback, MiddlewareCallback, SideMedium, SidePush} from "./types";
-
-const sharedState = new WeakMap();
+import {MediumCallback, MiddlewareCallback, SideCarMedium, SideMedium, SidePush} from "./types";
 
 function ItoI<T>(a: T) {
   return a;
 }
 
-export function createMedium<T>(symbol: any, defaults: T, middleware: MiddlewareCallback<T> = ItoI): SideMedium<T> {
-  if (sharedState.has(symbol)) {
-    return sharedState.get(sharedState);
-  }
-
+export function createMedium<T>(defaults: T, middleware: MiddlewareCallback<T> = ItoI): SideMedium<T> {
   let buffer: SidePush<T> = [];
   let assigned = false;
   const medium: SideMedium<T> = {
@@ -39,7 +33,10 @@ export function createMedium<T>(symbol: any, defaults: T, middleware: Middleware
       }
     },
   };
-  sharedState.set(symbol, medium);
 
   return medium;
+}
+
+export function createSidecarMedium(): SideCarMedium {
+  return createMedium(null as any);
 }

@@ -23,10 +23,10 @@ export type DefaultOrNot<T> = { default: T } | T;
 
 export type Importer<T> = () => Promise<DefaultOrNot<React.ComponentType<T>>>;
 
-export type sideCarMedium = SideMedium<React.ComponentType>;
+export type SideCarMedium = SideMedium<React.ComponentType>;
 
 export type SideCarHOC = {
-  sideCar: sideCarMedium;
+  sideCar: SideCarMedium;
 }
 
 export type SideCarComponent<T> = React.FunctionComponent<T & SideCarHOC>;

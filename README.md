@@ -68,19 +68,22 @@ dynamically import whatever and whenever you want.
 
 # API
 
-## createMedium(symbol)
+## createMedium()
 - Type: Util. Creates shared effect medium for algebraic effect.
 - Goal: To decouple modules from each other.
 - Usage: `use` in UI side, and `assign` from side-car. All effects would be executed.
 - Analog: WeakMap, React.__SECRET_DOM_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
 ```js
-const medium = createMedium(SECRET);
+const medium = createMedium(defaultValue);
 const cancelCb = medium.useMedium(someData);
 
 // like
 useEffect(() => medium.useMedium(someData), []);
 
 medium.assignMedium(someDataProcessor)
+
+// createSidecarMedium is a helper for createMedium to create a "sidecar" symbol
+const effectCar = createSidecarMedium();
 ```
 
 
