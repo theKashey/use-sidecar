@@ -15,7 +15,7 @@ export function useSidecar<T>(importer: Importer<T>, effect?: SideMedium<any>): 
           car => {
             const resolved: T = effect ? effect.read() : ((car as any).default || car);
             if (!resolved) {
-              console.log('with importer', importer);
+              console.error('with importer', importer);
               if (effect) {
                 throw new Error('Sidecar medium not found');
               } else {
