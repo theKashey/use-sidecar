@@ -5,6 +5,8 @@
   "main": "dist/es5/index.js",
   "devDependencies": {
     "@types/detect-node": "^2.0.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "ts-react-toolbox": "^0.2.2"
   },
   "engines": {
@@ -15,7 +17,7 @@
     "dev": "ts-react-toolbox dev",
     "test": "ts-react-toolbox test",
     "test:ci": "ts-react-toolbox test --runInBand --coverage",
-    "build": "ts-react-toolbox build",
+    "build": "rm -Rf ./dist && ts-react-toolbox build",
     "release": "ts-react-toolbox release",
     "lint": "ts-react-toolbox lint",
     "static": "ts-react-toolbox publish",

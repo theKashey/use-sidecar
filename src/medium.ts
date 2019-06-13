@@ -4,15 +4,18 @@ function ItoI<T>(a: T) {
   return a;
 }
 
-export function createMedium<T>(defaults: T, middleware: MiddlewareCallback<T> = ItoI): SideMedium<T> {
+export function createMedium<T>(defaults?: T, middleware: MiddlewareCallback<T> = ItoI): SideMedium<T> {
   let buffer: SidePush<T> = [];
   let assigned = false;
   const medium: SideMedium<T> = {
-    read() {
+    read():T {
       if (assigned) {
         throw new Error('Sidecar: could not `read` assigned medium');
       }
-      return (buffer as Array<T>)[buffer.length - 1];
+      if (buffer.length) {
+        return (buffer as Array<T>)[buffer.length - 1];
+      }
+      return defaults;
     },
     useMedium(data: T) {
       const item = middleware(data, assigned);
