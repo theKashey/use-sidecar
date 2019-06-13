@@ -41,7 +41,7 @@ export function renderCar<T extends any[], K>(WrappedComponent: RenderPropCompon
 
   return function Combiner(props: CombinedProps<T, K>) {
     const defaultState = React.useRef<T>(defaults(props));
-    const ref = React.useRef(state => defaultState.current = state);
+    const ref = React.useRef((state:T) => defaultState.current = state);
 
     return (
       <React.Fragment>
