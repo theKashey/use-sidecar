@@ -66,6 +66,13 @@ you have to use `exportSidecar(medium, component)` to export it, and use the sam
 - this limitation is for __libraries only__, as long as in the usercode you might 
 dynamically import whatever and whenever you want. 
 
+- `useMedium` is always async - action would be executed in a next tick, or on the logic load.
+- `sidecar` is always async - is does not matter have you loaded logic or not - component would be 
+rendered at least in the next tick.
+
+> except `medium.read`, which synchronously read the data from a medium, 
+and `medium.assingSyncMedium` which changes `useMedium` to be sync. 
+
 # API
 
 ## createMedium()
@@ -86,6 +93,10 @@ medium.assignMedium(someDataProcessor)
 const effectCar = createSidecarMedium();
 ```
 
+> ! For consistence `useMedium` is async - sidecar load status should not affect function behavior,
+thus effect would be always executed at least in the "next tick". You may alter
+this behavior by using `medium.assingSyncMedium`.
+
 
 ## exportSidecar(medium, component)
 - Type: HOC
@@ -96,7 +107,9 @@ const effectCar = createSidecarMedium();
 ```js
 import {effectCar} from './medium';
 import {EffectComponent} from './Effect';
-// hint - `effectCar` medium __have__ to be defined in another file
+// !!! - to prevent Effect from being imported
+// `effectCar` medium __have__ to be defined in another file
+// const effectCar = createSidecarMedium();
 export default exportSidecar(effectCar, EffectComponent);
 ```
 

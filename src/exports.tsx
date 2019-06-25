@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {SideCarComponent, SideCarMedium} from "./types";
 
-const DoNotImport = ({sideCar, ...rest}: any) => {
+const SideCar = ({sideCar, ...rest}: any) => {
   if (!sideCar) {
     throw new Error('Sidecar: please provide `sideCar` property to import the right car');
   }
@@ -12,9 +12,9 @@ const DoNotImport = ({sideCar, ...rest}: any) => {
   return <Target {...rest} />;
 };
 
-DoNotImport.isSideCarExport = true;
+SideCar.isSideCarExport = true;
 
 export function exportSidecar<T>(medium: SideCarMedium, exported: React.ComponentType<T>): SideCarComponent<T> {
   medium.useMedium(exported);
-  return DoNotImport as any;
+  return SideCar as any;
 }

@@ -10,12 +10,34 @@ export type SidePush<T> = {
   filter(cb: (x: T) => boolean): SidePush<T>;
 }
 
+/**
+ * An object describing side medium
+ */
 export interface SideMedium<T> {
-  useMedium(data: T): removeCb;
+  /**
+   * Pushes effect to the medium
+   * @param effect any information for real handler
+   */
+  useMedium(effect: T): removeCb;
 
-  assignMedium(cb: MediumCallback<T>): void;
+  /**
+   * Assigns effect handler to the medium
+   * @param {Function(effect: T)} handler effect handler
+   */
+  assignMedium(handler: MediumCallback<T>): void;
 
+  /**
+   * Assigns a synchronous effect handler to the medium, which would be executed right on call
+   * @param {Function(effect: T)} handler effect handler
+   */
+  assignSyncMedium(handler: MediumCallback<T>): void;
+
+  /**
+   * reads the data stored in the medium
+   */
   read(): T | undefined;
+
+  options?: object;
 }
 
 
@@ -30,3 +52,8 @@ export type SideCarHOC = {
 }
 
 export type SideCarComponent<T> = React.FunctionComponent<T & SideCarHOC>;
+
+export type SideCarMediumOptions = {
+  async?: boolean;
+  ssr?: boolean;
+}

@@ -1,12 +1,17 @@
-import {useReducer, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import * as isNode from 'detect-node';
 import {Importer, SideMedium} from "./types";
 
 const cache = new WeakMap();
 
 export function useSidecar<T>(importer: Importer<T>, effect?: SideMedium<any>): [React.ComponentType<T> | null, Error | null] {
-  const [Car, setCar] = useReducer((_, s) => s, isNode ? undefined : cache.get(importer));
-  const [error, setError] = useReducer((_, s) => s, null);
+  const options: any = effect && effect.options || {};
+  const couldUseCache = (
+    (!isNode || options.ssr) && (!options.async)
+  );
+
+  const [Car, setCar] = useState(couldUseCache ? undefined : cache.get(importer));
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!Car) {
@@ -23,9 +28,9 @@ export function useSidecar<T>(importer: Importer<T>, effect?: SideMedium<any>): 
               }
             }
             cache.set(importer, resolved);
-            setCar(resolved);
+            setCar(() => resolved);
           },
-          e => setError(e),
+          e => setError(() => e),
         )
     }
   }, []);

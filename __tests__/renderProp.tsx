@@ -30,7 +30,6 @@ describe('RenderProp', () => {
     const App = ({x}) => (
       <div>
         <CarRender x={x}>{props => {
-          console.log(props);
           fn(props);
           return props.y;
         }}</CarRender>
