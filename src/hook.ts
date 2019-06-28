@@ -1,16 +1,19 @@
 import {useState, useEffect} from 'react';
-import * as isNode from 'detect-node';
+import {env} from './env';
 import {Importer, SideMedium} from "./types";
 
 const cache = new WeakMap();
 
 export function useSidecar<T>(importer: Importer<T>, effect?: SideMedium<any>): [React.ComponentType<T> | null, Error | null] {
   const options: any = effect && effect.options || {};
-  const couldUseCache = (
-    (!isNode || options.ssr) && (!options.async)
-  );
 
-  const [Car, setCar] = useState(couldUseCache ? undefined : cache.get(importer));
+  if(env.isNode && !options.ssr){
+    return [null, null];
+  }
+
+  const couldUseCache = env.forceCache || (env.isNode && !!options.ssr) || (!options.async);
+
+  const [Car, setCar] = useState(couldUseCache ? () => cache.get(importer) : undefined);
   const [error, setError] = useState(null);
 
   useEffect(() => {

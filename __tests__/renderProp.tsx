@@ -2,6 +2,7 @@ import * as React from 'react';
 import {mount} from 'enzyme';
 
 import {renderCar, sidecar} from '../src';
+import {env} from '../src/env';
 
 const tick = () => new Promise(resolve => setTimeout(resolve, 10));
 
@@ -22,6 +23,10 @@ describe('RenderProp', () => {
     const external = new Promise<React.FC<Props>>(resolve => {
       resolveExternal = resolve;
     });
+
+    env.isNode = false;
+    env.forceCache = true;
+
     const Car = sidecar(() => external);
     const CarRender = renderCar(Car, (props: Props = {} as any) => [{y: props.x + 1}]);
 
