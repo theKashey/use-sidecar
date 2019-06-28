@@ -1,6 +1,6 @@
 {
   "name": "use-sidecar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sidecar code splitting utils",
   "main": "dist/es5/index.js",
   "devDependencies": {
