@@ -11,8 +11,8 @@
     <img src="https://img.shields.io/npm/v/use-sidecar.svg?style=flat-square" />
   </a>
     
-  <a href="https://circleci.com/gh/theKashey/use-sidecar/tree/master">
-   <img src="https://img.shields.io/circleci/project/github/theKashey/use-sidecar/master.svg?style=flat-square)" alt="Build status">
+  <a href="https://travis-ci.org/theKashey/use-sidecar">
+   <img src="https://img.shields.io/travis/theKashey/use-sidecar.svg?style=flat-square" alt="Build status">
   </a> 
 
   <a href="https://www.npmjs.com/package/use-sidecar">
