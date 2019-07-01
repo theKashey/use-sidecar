@@ -3,9 +3,6 @@
   <br/>
    Alternative way to code splitting
   <br/>
-   🧪 experimental ✂️
-  <br/>
-  <br/>
   
   <a href="https://www.npmjs.com/package/use-sidecar">
     <img src="https://img.shields.io/npm/v/use-sidecar.svg?style=flat-square" />
@@ -25,18 +22,16 @@
   <br/>
 </div>
 
-UI/Effects code splitting pattern - [read more](https://dev.to/thekashey/sidecar-for-a-code-splitting-1o8g).
-
-## SSR and usage tracking
-Sidecar pattern is clear:
-- you dont need to use/render any `sidecars` on server.
-- you dont have to load `sidecars` prior main render.
-
-Thus - no usage tracking, and literally no SSR. It's just skipped.
+UI/Effects code splitting pattern
+ - [read the original article](https://dev.to/thekashey/sidecar-for-a-code-splitting-1o8g) to understand concepts behind.
+ - [read how Google](https://medium.com/@cramforce/designing-very-large-javascript-applications-6e013a3291a3) split view and logic.
+ - [watch how Facebook](https://developers.facebook.com/videos/2019/building-the-new-facebookcom-with-react-graphql-and-relay/) defers "interactivity" effects. 
 
 ## Terminology: 
-- `sidecar`(robin) - not UI component, which may carry effects for a paired UI component.
-- `UI`(batman) - UI component, which interactivity is moved to a `sidecar`.
+- `sidecar` - non UI component, which may carry effects for a paired UI component.
+- `UI` - UI component, which interactivity is moved to a `sidecar`.
+
+`UI` is a _view_, `sidecar` is the _logic_ for it. Like Batman(UI) and his sidekick Robin(effects). 
 
 ## Concept
 - a `package` exposes __3 entry points__ using a [nested `package.json` format](https://github.com/theKashey/multiple-entry-points-example):
@@ -72,6 +67,14 @@ rendered at least in the next tick.
 
 > except `medium.read`, which synchronously read the data from a medium, 
 and `medium.assingSyncMedium` which changes `useMedium` to be sync. 
+
+## SSR and usage tracking
+Sidecar pattern is clear:
+- you dont need to use/render any `sidecars` on server.
+- you dont have to load `sidecars` prior main render.
+
+Thus - no usage tracking, and literally no SSR. It's just skipped.
+
 
 # API
 
@@ -160,7 +163,7 @@ return (
     {Car ? <Car {...props} /> : null}
     <UIComponent {...props}>
   </>
-); 
+);
 ```
 
 ## renderCar(Component)
@@ -188,6 +191,157 @@ setConfig({
   onError, // sets default error handler
 });
 ```
+
+# Examples
+## Deferred effect
+Let's imagine - on element focus you have to do "something", for example focus anther element
+
+#### Original code
+```js
+onFocus = event => {
+  if (event.currentTarget === event.target) {
+    document.querySelectorAll('button', event.currentTarget)
+  }
+}
+```
+
+#### Sidecar code
+
+3. Use medium (yes, .3)
+```js
+// we are calling medium with an original event as an argument
+const onFocus = event => focusMedium.useMedium(event);
+```
+2. Define reaction
+```js
+// in a sidecar
+
+// we are setting handler for the effect medium
+// effect is complicated - we are skipping event "bubbling", 
+// and focusing some button inside a parent
+focusMedium.assignMedium(event => {
+  if (event.currentTarget === event.target) {
+    document.querySelectorAll('button', event.currentTarget)
+  }
+});
+
+```
+1. Create medium
+Having these constrains - we have to clone `event`, as long as React would eventually reuse SyntheticEvent, thus not
+preserve `target` and `currentTarget`. 
+```js
+// 
+const focusMedium = createMedium(null, event => ({...event}));
+```
+Now medium side effect is ok to be async
+
+__Example__: [Effect for react-focus-lock](https://github.com/theKashey/react-focus-lock/blob/8c69c644ecfeed2ec9dc0dc4b5b30e896a366738/src/Lock.js#L48) - 1kb UI, 4kb sidecar
+
+### Medium callback
+Like a library level code splitting
+
+#### Original code
+```js
+import {x, y} from './utils';
+
+useEffect(() => {
+  if (x()) {
+    y()
+  }
+}, []);
+```
+
+#### Sidecar code
+
+```js
+// medium
+const utilMedium = createMedium();
+
+// utils
+const x = () => { /* ... */};
+const y = () => { /* ... */};
+
+// medium will callback with exports exposed
+utilMedium.assignMedium(cb => cb({
+ x, y
+}));
+
+
+// UI
+// not importing x and y from the module system, but would be given via callback
+useEffect(() => {
+  utilMedium.useMedium(({x,y}) => {
+      if (x()) {
+        y()
+      }
+  })
+}, []);
+```
+
+- Hint: there is a easy way to type it
+```js
+const utilMedium = createMedium<(cb: typeof import('./utils')) => void>();
+``` 
+
+__Example__: [Callback API for react-focus-lock](https://github.com/theKashey/react-focus-lock/blob/8c69c644ecfeed2ec9dc0dc4b5b30e896a366738/src/MoveFocusInside.js#L12) 
+
+### Split effects
+Lets take an example from a Google - Calendar app, with view and logic separated.
+To be honest - it's not easy to extract logic from application like calendar - usually it's tight coupled.
+
+#### Original code
+```js
+const CalendarUI = () => { 
+  const [date, setDate] = useState();
+  const onButtonClick = useCallback(() => setDate(Date.now), []);
+  
+  return (
+    <>
+     <input type="date" onChange={setDate} value={date} />
+     <input type="button" onClick={onButtonClick}>Set Today</button>
+    </>
+  )
+}
+```
+#### Sidecar code
+
+```js
+const CalendarUI = () => {
+  const [events, setEvents] = useState({});
+  const [date, setDate] = useState();
+  
+  return (
+    <>
+     <Sidecar setDate={setDate} setEvents={setEvents}/>
+     <UILayout {...events} date={date}/>
+    </>
+  )
+}
+
+const UILayout = ({onDateChange, onButtonClick, date}) => (
+  <>
+      <input type="date" onChange={onDateChange} value={date} />
+      <input type="button" onClick={onButtonClick}>Set Today</button>
+  </>
+);
+
+// in a sidecar
+// we are providing callbacks back to UI
+const Sidecar = ({setDate, setEvents}) => {
+  useEffect(() => setEvents({
+      onDateChange:setDate,
+      onButtonClick: () => setDate(Date.now),
+  }), []);
+  
+  return null;
+}
+```  
+
+While in this example this looks a bit, you know, strange - there are 3 times more code
+that in the original example - that would make a sense for a real Calendar, especially
+if some helper library, like `moment`, has been used.
+
+__Example__: [Effect for react-remove-scroll](https://github.com/theKashey/react-remove-scroll/blob/666472d5c77fb6c4e5beffdde87c53ae63ef42c5/src/SideEffect.tsx#L166) - 300b UI, 2kb sidecar
 
 # Licence
 

@@ -102,5 +102,15 @@ describe('medium', () => {
     await tick();
 
     expect(result).toEqual([42, 24]);
-  })
+  });
+
+  it('ts test for import', () => {
+    const utilMedium = createMedium<(cb: typeof import('../src/hoc')) => void>();
+
+    utilMedium.useMedium(test => {
+      test.sidecar(null);
+    });
+
+    utilMedium.assignMedium(cb => cb({sidecar: () => null}))
+  });
 });
