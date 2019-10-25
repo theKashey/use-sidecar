@@ -7,7 +7,7 @@ const cache = new WeakMap();
 export function useSidecar<T>(importer: Importer<T>, effect?: SideMedium<any>): [React.ComponentType<T> | null, Error | null] {
   const options: any = effect && effect.options || {};
 
-  if(env.isNode && !options.ssr){
+  if (env.isNode && !options.ssr) {
     return [null, null];
   }
 
@@ -24,11 +24,15 @@ export function useSidecar<T>(importer: Importer<T>, effect?: SideMedium<any>): 
             const resolved: T = effect ? effect.read() : ((car as any).default || car);
             if (!resolved) {
               console.error('Sidecar error: with importer', importer);
+              let error: Error;
               if (effect) {
-                throw new Error('Sidecar medium not found');
+                console.error('Sidecar error: with medium', effect);
+                error = new Error('Sidecar medium was not found');
               } else {
-                throw new Error('Sidecar not found in exports');
+                error = new Error('Sidecar was not found in exports');
               }
+              setError(() => error);
+              throw error;
             }
             cache.set(importer, resolved);
             setCar(() => resolved);
