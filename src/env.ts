@@ -1,4 +1,5 @@
-import * as isNode from 'detect-node';
+// @ts-ignore
+import isNode from 'detect-node';
 
 export let env = {
   isNode,
