@@ -2,9 +2,7 @@
   "name": "use-sidecar",
   "version": "1.0.2",
   "description": "Sidecar code splitting utils",
-  "main": "dist/es5/index.js",
   "devDependencies": {
-    "@types/detect-node": "^2.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "ts-react-toolbox": "^0.2.2"
@@ -31,7 +29,7 @@
   "sideEffects": [
     "**/medium.js"
   ],
-  "jsnext:main": "dist/es2015/index.js",
+  "main": "dist/es5/index.js",
   "module": "dist/es2015/index.js",
   "types": "dist/es5/index.d.ts",
   "files": [
@@ -46,7 +44,7 @@
   "author": "theKashey <thekashey@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "detect-node": "^2.0.4",
+    "detect-node-es": "^1.0.0",
     "tslib": "^1.9.3"
   },
   "size-limit": [
