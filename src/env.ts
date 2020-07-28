@@ -1,5 +1,4 @@
-// @ts-ignore
-import { isNode } from 'detect-node-es';
+import {isNode} from 'detect-node';
 
 export let env = {
   isNode,
