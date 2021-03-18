@@ -47,6 +47,10 @@
     "detect-node-es": "^1.1.0",
     "tslib": "^1.9.3"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theKashey/use-sidecar"
+  },
   "size-limit": [
     {
       "path": "dist/es2015/index.js",
