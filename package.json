@@ -1,6 +1,6 @@
 {
   "name": "use-sidecar",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Sidecar code splitting utils",
   "devDependencies": {
     "react": "^16.8.6",
@@ -44,7 +44,7 @@
   "author": "theKashey <thekashey@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "detect-node-es": "^1.0.0",
+    "detect-node-es": "^1.1.0",
     "tslib": "^1.9.3"
   },
   "size-limit": [
