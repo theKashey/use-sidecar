@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import {env} from './env';
 import {Importer, SideMedium} from "./types";
+import {getSidecarName} from "./names";
 
 const cache = new WeakMap();
 
@@ -27,9 +28,9 @@ export function useSidecar<T>(importer: Importer<T>, effect?: SideMedium<any>): 
               let error: Error;
               if (effect) {
                 console.error('Sidecar error: with medium', effect);
-                error = new Error('Sidecar medium was not found');
+                error = new Error('Sidecar ' + getSidecarName(effect) + ' medium was not foun');
               } else {
-                error = new Error('Sidecar was not found in exports');
+                error = new Error('Sidecar ' + getSidecarName(effect) + ' was not found in exports');
               }
               setError(() => error);
               throw error;

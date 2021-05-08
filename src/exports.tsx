@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {SideCarComponent, SideCarMedium} from "./types";
+import {getSidecarName} from "./names";
 
 const SideCar = ({sideCar, ...rest}: any) => {
   if (!sideCar) {
@@ -7,7 +8,7 @@ const SideCar = ({sideCar, ...rest}: any) => {
   }
   const Target = sideCar.read();
   if (!Target) {
-    throw new Error('Sidecar medium not found');
+    throw new Error('Sidecar ' + getSidecarName(sideCar) + ' medium not found');
   }
   return <Target {...rest} />;
 };
