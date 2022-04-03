@@ -24,7 +24,7 @@
     "prepublish": "npm run build"
   },
   "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0"
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "sideEffects": [
     "**/medium.js"
