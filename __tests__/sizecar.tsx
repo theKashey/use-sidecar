@@ -1,8 +1,11 @@
-import { mount } from 'enzyme';
+import { configure, mount } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import * as React from 'react';
 
 import { sidecar, exportSidecar, createSidecarMedium } from '../src';
 import { env } from '../src/env';
+
+configure({ adapter: new Adapter() });
 
 const tick = () => new Promise((resolve) => setTimeout(resolve, 10));
 
