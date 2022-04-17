@@ -1,9 +1,13 @@
 import * as React from 'react';
-import {Importer, SideCarHOC} from "./types";
-import {useSidecar} from "./hook";
 
-export function sidecar<T>(importer: Importer<T>, errorComponent?: React.ReactNode): React.FunctionComponent<T & SideCarHOC> {
-  const ErrorCase: React.FunctionComponent = () => (errorComponent as any);
+import { useSidecar } from './hook';
+import { Importer, SideCarHOC } from './types';
+
+export function sidecar<T>(
+  importer: Importer<T>,
+  errorComponent?: React.ReactNode
+): React.FunctionComponent<T & SideCarHOC> {
+  const ErrorCase: React.FunctionComponent = () => errorComponent as any;
 
   return function Sidecar(props) {
     const [Car, error] = useSidecar(importer, props.sideCar);
@@ -13,5 +17,5 @@ export function sidecar<T>(importer: Importer<T>, errorComponent?: React.ReactNo
     }
 
     return Car ? <Car {...props} /> : null;
-  }
+  };
 }

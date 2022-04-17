@@ -1,4 +1,4 @@
-import {MediumCallback, MiddlewareCallback, SideCarMedium, SideCarMediumOptions, SideMedium, SidePush} from "./types";
+import { MediumCallback, MiddlewareCallback, SideCarMedium, SideCarMediumOptions, SideMedium, SidePush } from './types';
 
 function ItoI<T>(a: T) {
   return a;
@@ -11,24 +11,28 @@ function innerCreateMedium<T>(defaults?: T, middleware: MiddlewareCallback<T> = 
   const medium: SideMedium<T> = {
     read(): T {
       if (assigned) {
-        throw new Error('Sidecar: could not `read` from an `assigned` medium. `read` could be used only with `useMedium`.');
+        throw new Error(
+          'Sidecar: could not `read` from an `assigned` medium. `read` could be used only with `useMedium`.'
+        );
       }
+
       if (buffer.length) {
         return (buffer as Array<T>)[buffer.length - 1];
       }
 
-      return defaults;
+      return defaults!;
     },
     useMedium(data: T) {
       const item = middleware(data, assigned);
       buffer.push(item);
 
       return () => {
-        buffer = buffer.filter(x => x !== item);
-      }
+        buffer = buffer.filter((x) => x !== item);
+      };
     },
     assignSyncMedium(cb: MediumCallback<T>) {
       assigned = true;
+
       while (buffer.length) {
         const cbs = buffer as Array<T>;
         buffer = [];
@@ -36,12 +40,13 @@ function innerCreateMedium<T>(defaults?: T, middleware: MiddlewareCallback<T> = 
       }
 
       buffer = {
-        push: x => cb(x),
+        push: (x) => cb(x),
         filter: () => buffer,
-      }
+      };
     },
     assignMedium(cb: MediumCallback<T>) {
       assigned = true;
+
       let pendingQueue: Array<T> = [];
 
       if (buffer.length) {
@@ -62,7 +67,7 @@ function innerCreateMedium<T>(defaults?: T, middleware: MiddlewareCallback<T> = 
       cycle();
 
       buffer = {
-        push: x => {
+        push: (x) => {
           pendingQueue.push(x);
           cycle();
         },
@@ -71,7 +76,7 @@ function innerCreateMedium<T>(defaults?: T, middleware: MiddlewareCallback<T> = 
 
           return buffer;
         },
-      }
+      };
     },
   };
 
@@ -84,10 +89,12 @@ export function createMedium<T>(defaults?: T, middleware: MiddlewareCallback<T> 
 
 export function createSidecarMedium(options: SideCarMediumOptions = {}): Readonly<SideCarMedium> {
   const medium = innerCreateMedium(null as any);
+
   medium.options = {
     async: true,
     ssr: false,
     ...options,
   };
+
   return medium;
 }

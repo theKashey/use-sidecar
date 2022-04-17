@@ -1,15 +1,17 @@
+import { mount } from 'enzyme';
 import * as React from 'react';
-import {mount} from 'enzyme';
 
-import {sidecar, exportSidecar, createSidecarMedium} from "../src";
-import {env} from '../src/env';
+import { sidecar, exportSidecar, createSidecarMedium } from '../src';
+import { env } from '../src/env';
 
-const tick = () => new Promise(resolve => setTimeout(resolve, 10));
+const tick = () => new Promise((resolve) => setTimeout(resolve, 10));
 
 describe('sidecar', () => {
+  const noCar = null as any;
+
   describe('ServerSide', function () {
     beforeEach(() => {
-      env.isNode = true
+      env.isNode = true;
     });
 
     it('should never import car', async () => {
@@ -17,7 +19,7 @@ describe('sidecar', () => {
 
       const SC = sidecar(importer);
 
-      const wrapper = mount(<SC sideCar={null}/>);
+      const wrapper = mount(<SC sideCar={noCar} />);
       expect(wrapper.html()).toBe(null);
 
       await tick();
@@ -26,18 +28,18 @@ describe('sidecar', () => {
 
       // remount
 
-      const remounted = mount(<SC sideCar={null}/>);
+      const remounted = mount(<SC sideCar={noCar} />);
       expect(remounted.html()).toBe(null);
     });
 
     it('should load ssr car', async () => {
-      const sc = createSidecarMedium({ssr: true});
+      const sc = createSidecarMedium({ ssr: true });
       const Comp = exportSidecar(sc, () => <div>test</div>);
       const importer = () => Promise.resolve(Comp);
 
       const SC = sidecar(importer);
 
-      const wrapper = mount(<SC sideCar={sc}/>);
+      const wrapper = mount(<SC sideCar={sc} />);
       expect(wrapper.html()).toBe(null);
 
       await tick();
@@ -46,11 +48,10 @@ describe('sidecar', () => {
 
       // remount
 
-      const remounted = mount(<SC sideCar={sc}/>);
+      const remounted = mount(<SC sideCar={sc} />);
       expect(remounted.html()).toBe('<div>test</div>');
     });
   });
-
 
   describe('ClientSide', function () {
     beforeEach(() => {
@@ -62,7 +63,7 @@ describe('sidecar', () => {
 
       const SC = sidecar(importer);
 
-      const wrapper = mount(<SC sideCar={null}/>);
+      const wrapper = mount(<SC sideCar={noCar} />);
       expect(wrapper.html()).toBe(null);
 
       await tick();
@@ -71,25 +72,25 @@ describe('sidecar', () => {
 
       // remount
 
-      const remounted = mount(<SC sideCar={null}/>);
+      const remounted = mount(<SC sideCar={noCar} />);
       expect(remounted.html()).toBe('<div>test</div>');
     });
 
     it('should error car', async () => {
-      const sc = createSidecarMedium({async: false});
+      const sc = createSidecarMedium({ async: false });
       const Comp = exportSidecar(sc, () => <div>test</div>);
 
-      expect(() => mount(<Comp sideCar={null}/>)).toThrow();
+      expect(() => mount(<Comp sideCar={noCar} />)).toThrow();
     });
 
     it('should load sync car', async () => {
-      const sc = createSidecarMedium({async: false});
+      const sc = createSidecarMedium({ async: false });
       const Comp = exportSidecar(sc, () => <div>test</div>);
       const importer = () => Promise.resolve(Comp);
 
       const SC = sidecar(importer);
 
-      const wrapper = mount(<SC sideCar={sc}/>);
+      const wrapper = mount(<SC sideCar={sc} />);
       expect(wrapper.html()).toBe(null);
 
       await tick();
@@ -98,7 +99,7 @@ describe('sidecar', () => {
 
       // remount
 
-      const remounted = mount(<SC sideCar={sc}/>);
+      const remounted = mount(<SC sideCar={sc} />);
       expect(remounted.html()).toBe('<div>test</div>');
     });
 
@@ -109,7 +110,7 @@ describe('sidecar', () => {
 
       const SC = sidecar(importer);
 
-      const wrapper = mount(<SC sideCar={sc}/>);
+      const wrapper = mount(<SC sideCar={sc} />);
       expect(wrapper.html()).toBe(null);
 
       await tick();
@@ -118,7 +119,7 @@ describe('sidecar', () => {
 
       // remount
 
-      const remounted = mount(<SC sideCar={sc}/>);
+      const remounted = mount(<SC sideCar={sc} />);
       expect(remounted.html()).toBe(null);
       await tick();
       expect(remounted.update().html()).toBe('<div>test</div>');

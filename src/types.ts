@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 export type removeCb = () => void;
 export type MediumCallback<T> = (data: T) => any;
@@ -8,7 +8,7 @@ export type SidePush<T> = {
 
   push(data: T): void;
   filter(cb: (x: T) => boolean): SidePush<T>;
-}
+};
 
 /**
  * An object describing side medium
@@ -37,23 +37,23 @@ export interface SideMedium<T> {
    */
   read(): T | undefined;
 
-  options?: object;
+  options?: Record<string, any>;
 }
-
 
 export type DefaultOrNot<T> = { default: T } | T;
 
 export type Importer<T> = () => Promise<DefaultOrNot<React.ComponentType<T>>>;
 
-export type SideCarMedium = SideMedium<React.ComponentType>;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type SideCarMedium<T = {}> = SideMedium<React.ComponentType<T>>;
 
 export type SideCarHOC = {
   sideCar: SideCarMedium;
-}
+};
 
 export type SideCarComponent<T> = React.FunctionComponent<T & SideCarHOC>;
 
 export type SideCarMediumOptions = {
   async?: boolean;
   ssr?: boolean;
-}
+};

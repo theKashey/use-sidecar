@@ -7,8 +7,9 @@
   "module": "dist/es2015/index.js",
   "types": "dist/es5/index.d.ts",
   "devDependencies": {
-    "@theuiteam/lib-builder": "^0.1.4",
     "@size-limit/preset-small-lib": "^2.1.6",
+    "@theuiteam/lib-builder": "^0.1.4",
+    "enzyme-adapter-react-16": "^1.15.6",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
@@ -31,8 +32,8 @@
     "changelog:rewrite": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
   "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
-    "@types/react": "^16.9.0 || ^17.0.0 || ^18.0.0"
+    "@types/react": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "sideEffects": [
     "**/medium.js"
@@ -49,8 +50,8 @@
   "author": "theKashey <thekashey@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "tslib": "^2.0.0",
-    "detect-node-es": "^1.1.0"
+    "detect-node-es": "^1.1.0",
+    "tslib": "^2.0.0"
   },
   "peerDependenciesMeta": {
     "@types/react": {

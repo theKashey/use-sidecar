@@ -1,7 +1,7 @@
-import {createMedium} from '../src';
+import { createMedium } from '../src';
 
 describe('medium', () => {
-  const tick = () => new Promise(resolve => setTimeout(resolve, 10));
+  const tick = () => new Promise((resolve) => setTimeout(resolve, 10));
 
   it('set/read', () => {
     const medium = createMedium(42);
@@ -13,15 +13,17 @@ describe('medium', () => {
   });
 
   it('set/use - async', async () => {
-    const medium = createMedium();
+    const medium = createMedium<number>();
     medium.useMedium(42);
     medium.useMedium(24);
 
     const spy = jest.fn();
-    const result = [];
-    medium.assignMedium(arg => {
+    const result: number[] = [];
+
+    medium.assignMedium((arg) => {
       spy(arg);
       result.push(arg);
+
       if (arg === 42) {
         medium.useMedium(100);
       }
@@ -38,15 +40,17 @@ describe('medium', () => {
   });
 
   it('set/use - sync', () => {
-    const medium = createMedium();
+    const medium = createMedium<number>();
     medium.useMedium(42);
     medium.useMedium(24);
 
     const spy = jest.fn();
-    const result = [];
-    medium.assignSyncMedium(arg => {
+    const result: number[] = [];
+
+    medium.assignSyncMedium((arg) => {
       spy(arg);
       result.push(arg);
+
       if (arg === 42) {
         medium.useMedium(100);
       }
@@ -59,12 +63,13 @@ describe('medium', () => {
   });
 
   it('Push new values', async () => {
-    const medium = createMedium();
+    const medium = createMedium<number>();
     medium.useMedium(42);
 
     const spy = jest.fn();
-    const result = [];
-    medium.assignMedium(arg => {
+    const result: number[] = [];
+
+    medium.assignMedium((arg) => {
       spy(arg);
       result.push(arg);
     });
@@ -83,12 +88,13 @@ describe('medium', () => {
   });
 
   it('Push new values sync', async () => {
-    const medium = createMedium();
+    const medium = createMedium<number>();
     medium.useMedium(42);
 
     const spy = jest.fn();
-    const result = [];
-    medium.assignSyncMedium(arg => {
+    const result: number[] = [];
+
+    medium.assignSyncMedium((arg) => {
       spy(arg);
       result.push(arg);
     });
@@ -107,10 +113,13 @@ describe('medium', () => {
   it('ts test for import', () => {
     const utilMedium = createMedium<(cb: typeof import('../src/hoc')) => void>();
 
-    utilMedium.useMedium(test => {
-      test.sidecar(null);
+    utilMedium.useMedium((test) => {
+      expect(test.sidecar(42 as any)).toBe(42);
     });
 
-    utilMedium.assignMedium(cb => cb({sidecar: () => null}))
+    const spy = jest.fn().mockImplementation((a) => a);
+    utilMedium.assignMedium((cb) => cb({ sidecar: spy }));
+
+    expect(spy).toHaveBeenCalledWith(42);
   });
 });
