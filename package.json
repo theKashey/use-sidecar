@@ -9,6 +9,7 @@
   "devDependencies": {
     "@size-limit/preset-small-lib": "^2.1.6",
     "@theuiteam/lib-builder": "^0.1.4",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
     "enzyme-adapter-react-16": "^1.15.6",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
