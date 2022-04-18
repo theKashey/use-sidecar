@@ -87,7 +87,8 @@ export function createMedium<T>(defaults?: T, middleware: MiddlewareCallback<T> 
   return innerCreateMedium(defaults, middleware);
 }
 
-export function createSidecarMedium(options: SideCarMediumOptions = {}): Readonly<SideCarMedium> {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function createSidecarMedium<T = {}>(options: SideCarMediumOptions = {}): Readonly<SideCarMedium<T>> {
   const medium = innerCreateMedium(null as any);
 
   medium.options = {

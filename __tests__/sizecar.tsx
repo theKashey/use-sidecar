@@ -86,6 +86,20 @@ describe('sidecar', () => {
       expect(() => mount(<Comp sideCar={noCar} />)).toThrow();
     });
 
+    it('typed sidecar error car', async () => {
+      const sc1 = createSidecarMedium({ async: false });
+      // @ts-expect-error
+      exportSidecar(sc1, ({ x }: { x: string }) => <div>{x}</div>);
+
+      const sc2 = createSidecarMedium<{ x: string }>({ async: false });
+      exportSidecar(sc2, ({ x }: { x: string }) => <div>{x}</div>);
+
+      const sc3 = createSidecarMedium<{ x: string }>({ async: false });
+      exportSidecar(sc3, () => <div>{test}</div>);
+
+      expect(1).toBe(1);
+    });
+
     it('should load sync car', async () => {
       const sc = createSidecarMedium({ async: false });
       const Comp = exportSidecar(sc, () => <div>test</div>);
