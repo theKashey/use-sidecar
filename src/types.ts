@@ -47,11 +47,11 @@ export type Importer<T> = () => Promise<DefaultOrNot<React.ComponentType<T>>>;
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type SideCarMedium<T = {}> = SideMedium<React.ComponentType<T>>;
 
-export type SideCarHOC = {
-  sideCar: SideCarMedium;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export declare type SideCarHOC<T = {}> = {
+  readonly sideCar: SideCarMedium<T>;
 };
-
-export type SideCarComponent<T> = React.FunctionComponent<T & SideCarHOC>;
+export declare type SideCarComponent<T> = React.FunctionComponent<T & SideCarHOC<T>>;
 
 export type SideCarMediumOptions = {
   async?: boolean;

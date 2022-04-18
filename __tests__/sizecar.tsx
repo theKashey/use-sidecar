@@ -121,25 +121,26 @@ describe('sidecar', () => {
     });
 
     it('should load async car', async () => {
-      const sc = createSidecarMedium();
-      const Comp = exportSidecar(sc, () => <div>test</div>);
+      const sc = createSidecarMedium<{ x: number }>();
+      const Comp = exportSidecar(sc, ({ x }) => <div>test {x || 'undefined'}</div>);
       const importer = () => Promise.resolve(Comp);
 
       const SC = sidecar(importer);
 
-      const wrapper = mount(<SC sideCar={sc} />);
+      const wrapper = mount(<SC sideCar={sc} x={42} />);
       expect(wrapper.html()).toBe(null);
 
       await tick();
 
-      expect(wrapper.update().html()).toBe('<div>test</div>');
+      expect(wrapper.update().html()).toBe('<div>test 42</div>');
 
       // remount
 
+      // @ts-expect-error
       const remounted = mount(<SC sideCar={sc} />);
       expect(remounted.html()).toBe(null);
       await tick();
-      expect(remounted.update().html()).toBe('<div>test</div>');
+      expect(remounted.update().html()).toBe('<div>test undefined</div>');
     });
   });
 });
