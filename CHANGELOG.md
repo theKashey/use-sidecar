@@ -1,3 +1,17 @@
+## [1.1.2](https://github.com/theKashey/use-sidecar/compare/v1.1.1...v1.1.2) (2022-04-18)
+
+### Bug Fixes
+
+- update Sidecar typescript integration ([8057bc5](https://github.com/theKashey/use-sidecar/commit/8057bc5cd863797d5c29e6e1955f33180f2f9aaa))
+
+## [1.1.1](https://github.com/theKashey/use-sidecar/compare/v1.1.0...v1.1.1) (2022-04-18)
+
+### Bug Fixes
+
+- correct sidecar factory typing ([a7166cb](https://github.com/theKashey/use-sidecar/commit/a7166cbc3fed69d07d08a1107dd8c9467c83a924))
+
+# [1.1.0](https://github.com/theKashey/use-sidecar/compare/v1.0.5...v1.1.0) (2022-04-17)
+
 ## [1.0.5](https://github.com/theKashey/use-sidecar/compare/v1.0.4...v1.0.5) (2021-03-18)
 
 ## [1.0.4](https://github.com/theKashey/use-sidecar/compare/v1.0.3...v1.0.4) (2021-01-17)
