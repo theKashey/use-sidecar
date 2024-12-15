@@ -95,7 +95,7 @@ describe('sidecar', () => {
       exportSidecar(sc2, ({ x }: { x: string }) => <div>{x}</div>);
 
       const sc3 = createSidecarMedium<{ x: string }>({ async: false });
-      exportSidecar(sc3, () => <div>{test}</div>);
+      exportSidecar(sc3, () => <div>test</div>);
 
       expect(1).toBe(1);
     });

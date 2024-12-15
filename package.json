@@ -7,7 +7,8 @@
   "module": "dist/es2015/index.js",
   "types": "dist/es5/index.d.ts",
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^2.1.6",
+    "@size-limit/preset-small-lib": "^11.0.2",
+    "size-limit": "^11.0.2",
     "@theuiteam/lib-builder": "^0.1.4",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "enzyme-adapter-react-16": "^1.15.6",
@@ -78,6 +79,9 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "resolutions": {
+    "@types/react": "^19.0.0"
   },
   "prettier": {
     "printWidth": 120,

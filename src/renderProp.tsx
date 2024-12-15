@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useCallback, useEffect, useLayoutEffect } from 'react';
+import { useState, useCallback, useEffect, useLayoutEffect, FC } from 'react';
 
 import { SideCarHOC } from './types';
 
@@ -17,7 +17,7 @@ type ChildrenProps<T extends any[]> = {
 export function renderCar<T extends any[], K, C = RenderPropComponent<T, K & Partial<SideCarHOC>>>(
   WrappedComponent: C,
   defaults: (props: K) => T
-) {
+): FC<CombinedProps<T, K>> {
   function State({ stateRef, props }: { stateRef: React.RefObject<Callback>; props: CombinedProps<T, K> }) {
     const renderTarget = useCallback(function SideTarget(...args: T) {
       useLayoutEffect(() => {
